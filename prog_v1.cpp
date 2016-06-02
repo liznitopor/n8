@@ -17,7 +17,7 @@ int main()
 	int first_iterator=-1, array[1000], second_iterator, third_iterator=-1, size_array[1000], decipher_temp, decipher_array[1000], add_temp;
 	string additional_string, cipher_string,cipher_string2, cipher_string3;
 	
-	while(!inputFile.eof())			//получаем с файла десятичные числа
+	while(!inputFile.eof())			//ГЇГ®Г«ГіГ·Г ГҐГ¬ Г± ГґГ Г©Г«Г  Г¤ГҐГ±ГїГІГЁГ·Г­Г»ГҐ Г·ГЁГ±Г«Г 
 	{	first_iterator++;
 		inputFile.read((char*)&temp_read,sizeof(char));
 		array[first_iterator]=int(temp_read)-48;
@@ -25,17 +25,17 @@ int main()
 		second_iterator=first_iterator;
 	}
 	
-	for (int i=0;i<=second_iterator-1;i++)			//перевод в двоичные числа
+	for (int i=0;i<=second_iterator-1;i++)			//ГЇГҐГ°ГҐГўГ®Г¤ Гў Г¤ГўГ®ГЁГ·Г­Г»ГҐ Г·ГЁГ±Г«Г 
 	{	itoa(array[i],bynary_string,2);	
 		strcat(bynary_string2,bynary_string);
 		third_iterator++;
 		size_array[third_iterator]=strlen(bynary_string);
 	}
-	cout<<"Зашифрованный двоичный код: ";
+	cout<<"Г‡Г ГёГЁГґГ°Г®ГўГ Г­Г­Г»Г© Г¤ГўГ®ГЁГ·Г­Г»Г© ГЄГ®Г¤: ";
 	for (int j=0;j<strlen(bynary_string2);j++)			
 	{	additional_string+=bynary_string2[j];
 		if (additional_string.size()==8)
-		{	while(!cipherFile.eof())			//нахождение соответствий в файле с шифром
+		{	while(!cipherFile.eof())			//Г­Г ГµГ®Г¦Г¤ГҐГ­ГЁГҐ Г±Г®Г®ГІГўГҐГІГ±ГІГўГЁГ© Гў ГґГ Г©Г«ГҐ Г± ГёГЁГґГ°Г®Г¬
 			{	getline(cipherFile,cipher_string);
 				cipher_letter=cipher_string[9];
 				cipher_string.erase(8,2);
@@ -62,10 +62,89 @@ int main()
 		cipherFile.seekg(ios::beg);
 		additional_string.clear();
 	}
-	cout<<"Сделать дешифровку(y/n)?\n";
+	//Alex Birukov
+			cout <<endl<< "Length: "<<cipher_string2.length()<<endl;
+		int row, col, mas_col[100], mas_row[100], kol_col=0, kol_row=0;//Г§Г Г¤Г Г«ГЁ Г±ГІГ°Г®ГЄГЁГЁ Г±ГІГ®Г«ГЎГ¶Г»
+		char **mas_ciph;
+		string slovo1, slovo2;
+		
+		cin>>slovo1>>slovo2;//ГўГўГҐГ«ГЁ Г±ГІГ°Г®ГЄГЁ ГЁ Г±ГІГ®Г«ГЎГ¶Г»
+		row=slovo2.size();
+		col=slovo1.size();
+		mas_ciph=new char*[row+1];//Г±Г¤ГҐГ«Г Г«ГЁ Г¤ГЁГ­Г Г¬ГЁГҐГ±ГЄГЁГ© Г¬Г Г±Г±ГЁГў
+		for(int i=0;i<row+1;i++)
+			mas_ciph[i]=new char [col+1];
+		
+		for(int i=1;i<col+1;i++)
+			mas_ciph[0][i]=slovo1[i-1];
+			
+		for(int i=1;i<row+1;i++)
+			mas_ciph[i][0]=slovo2[i-1];
+		mas_ciph[0][0]=' ';
+		int add_c=0;	
+		for(int i=1;i<row+1;i++){
+			for(int j=1;j<col+1;j++){
+				mas_ciph[i][j]=cipher_string2[add_c];
+				add_c++;
+			}
+		}
+
+		for(int i=1;i<col;i++){
+			if(mas_ciph[0][i]>mas_ciph[0][i+1]){
+				for(int j=0;j<row+1;j++){
+					swap(mas_ciph[j][i],mas_ciph[j][i+1]);
+				}
+				mas_col[kol_col]=i;
+				kol_col++;
+				i=0;
+			}
+		}
+		for(int i=1;i<row;i++){
+			if(mas_ciph[i][0]>mas_ciph[i+1][0]){
+				for(int j=0;j<col+1;j++){
+					swap(mas_ciph[i][j],mas_ciph[i+1][j]);
+				}
+				mas_row[kol_row]=i;
+				kol_row++;
+				i=0;
+			}
+		}
+		for(int i=0;i<row+1;i++){
+			for(int j=0;j<col+1;j++){
+				cout<<mas_ciph[i][j];
+			}
+			cout<<endl;
+		}
+	cout<<endl;
+		for(int i=kol_col-1;i!=-1;i--){
+			for(int j=0;j<row+1;j++){
+				swap(mas_ciph[j][mas_col[i]],mas_ciph[j][mas_col[i]+1]);
+			}
+		}
+		for(int i=kol_row-1;i!=-1;i--){
+			for(int j=0;j<col+1;j++){
+				swap(mas_ciph[mas_row[i]][j],mas_ciph[mas_row[i]+1][j]);
+			}
+		}	
+		for(int i=0;i<row+1;i++){
+			for(int j=0;j<col+1;j++){
+				cout<<mas_ciph[i][j];
+			}
+			cout<<endl;
+		}
+		add_c=0;
+		for(int i=1;i<row+1;i++){
+			for(int j=1;j<col+1;j++){
+				cipher_string2[add_c]=mas_ciph[i][j];
+				add_c++;
+			}
+		}
+		cout<<cipher_string2;
+	//end Alex Birukov
+	cout<<"Г‘Г¤ГҐГ«Г ГІГј Г¤ГҐГёГЁГґГ°Г®ГўГЄГі(y/n)?\n";
 	cin>>ansver;
 	if (ansver=='y' || ansver=='Y')
-	{	cout<<"Дешифровка: ";
+	{	cout<<"Г„ГҐГёГЁГґГ°Г®ГўГЄГ : ";
 		for(int i=0;i<=third_iterator;i++)
 		{	strncpy(decipher,cipher_string3.c_str(),size_array[i]);
 			cipher_string3.erase(0,size_array[i]);
